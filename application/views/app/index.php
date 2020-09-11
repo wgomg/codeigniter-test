@@ -64,7 +64,7 @@
 
         let url = `app/getHistorical/${indCode}/${from.length > 0 ? `${from}` : '0'}/${to.length > 0 ? `/${to}` : '0'}`;
 
-        $.getJSON(url, function(data) {
+        $.getJSON(url, function(config) {
             let ctx = $('#chart canvas')[0].getContext('2d');
             ctx.canvas.width = 1000;
             ctx.canvas.height = 300;
@@ -73,7 +73,6 @@
 
             config.data.datasets[0].backgroundColor = color('rgb(255, 99, 132)').alpha(0.5).rgbString();
             config.data.datasets[0].borderColor = 'rgb(255, 99, 132)';
-
 
             chart = new Chart(ctx, config);
 
