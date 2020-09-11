@@ -1,0 +1,11 @@
+{
+	"name": "wgomg/ci3app",
+	"description": "Simple codeigniter 3 app",
+	"type": "project",
+	"license": "MIT",
+	"require": {
+		"twbs/bootstrap": "^4.5",
+		"components/jquery": "^3.5",
+		"datatables/datatables": "^1.1"
+	}
+}
