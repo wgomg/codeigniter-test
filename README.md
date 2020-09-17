@@ -2,7 +2,7 @@
 
 ### Requirements
 - For install you should comply with [Codeigniter's 3 server requirements](https://codeigniter.com/userguide3/general/requirements.html). 
-- Tested only on Apache server.
+- Apache server.
 - Works with SQL Server and should work with MySql (only migration where tested with MySql, probably will be bugs with date formats and conversions), should have `sqlsrv` or `mysqli` drivers installed and enabled.
 - Make sure to have `mod_rewrite` module enabled.
 - Composer is required.
@@ -22,5 +22,5 @@
 - Migrate controller does just that, run migrations.
 
 ### Libraries used
-- Datatables, jquery, bootstrap installed via composer
-- Chart.js and Moment.js used vía cdn link, couldn't find a way to install it via composer and didn't wan't to download and add as asset.
+- Datatables, jquery, bootstrap installed via composer.
+- Chart.js and Moment.js used vía cdn link.
