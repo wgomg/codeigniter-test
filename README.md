@@ -18,7 +18,7 @@
 ### Notes
 - Database is designed whith 2 tables: `Indicators` and `Historical`. First one contains all available indicators from `https://mindicador.cl/api` endpoint, second one is filled with all historical data from `https://mindicador.cl/api/{tipo_indicador}/{yyyy}`. This way it's easier to create mantainers for all indicators if needed and there is no need to create aditional tables if aditional indicators were ever added.
 - There is one core Model `application\core\MY_Model.php` which contains all basic database operations (get, save, update, delete) which are extendend to Indicators and Historical models.
-- There is only one controller for the app (`application\controllers\App.php`) because is pretty small.
+- There is only one controller for the app (`application\controllers\App.php`) because it's pretty small.
 - Migrate controller does just that, run migrations.
 
 ### Libraries used
