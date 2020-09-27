@@ -1,9 +1,14 @@
 <?php
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+
 class Migration_Initial extends CI_Migration
 {
     private $urlLatest = "https://mindicador.cl/api";
-    private $urlHistorical = "https://mindicador.cl/api/tipo_indicador/año";
+    private $urlHistorical = "https://mindicador.cl/api/:tipo_indicador/:año";
 
     private $LOWEST_YEAR = 1927;    // the lowest year with data for any indicator
 
@@ -111,30 +116,49 @@ class Migration_Initial extends CI_Migration
                 $progress = 0;
                 $total = count($indicators) * ($thisYear - $this->LOWEST_YEAR);
 
-                foreach ($indicators as $ind) {
-                    for ($year = $thisYear; $year > $this->LOWEST_YEAR; $year--) {
-                        $url = str_replace(['tipo_indicador', 'año'], [$ind['code'], $year], $this->urlHistorical);
+                $client = new Client();
 
-                        $json = json_decode(file_get_contents($url), true);
-                        $yearData = $json['serie'];
+                $request = function ($indicators, $thisYear) {
+                    foreach ($indicators as $ind) {
+                        for ($year = $thisYear; $year > $this->LOWEST_YEAR; $year--) {
+                            $url = strtr($this->urlHistorical, array(':tipo_indicador' => $ind['code'], ':año' => $year));
+                            yield new Request('GET', $url);
+                        }
+                    }
+                };
+
+                $pool = new Pool($client, $request($indicators, $thisYear), [
+                    'concurrency' => 5,
+                    'fulfilled' => function (Response $response) use ($now, &$historicalData, &$progress, $total, $indicators) {
+                        $body = json_decode($response->getBody());
+
+                        $indicator = array_slice(
+                            array_filter($indicators, function ($ind) use ($body) {
+                                return $ind['code'] == $body->codigo;
+                            }),
+                            0,
+                            1
+                        )[0]['id'];
+                        $yearData = $body->serie;
 
                         $this->progress_bar($progress++, $total);
 
-                        if (count($yearData) == 0) continue;
-
                         foreach ($yearData as $data) {
-                            if ($data['fecha'] <= $now)
+                            if ($data->fecha <= $now)
                                 array_push($historicalData, array(
-                                    'indicator' => $ind['id'],
-                                    'value'     => $data['valor'],
-                                    'date'      => $data['fecha']
+                                    'indicator' => $indicator,
+                                    'value'     => $data->valor,
+                                    'date'      => $data->fecha
                                 ));
                         }
                     }
-                }
+                ]);
 
                 $this->progress_bar($progress++, $total);
             }
+            $promise = $pool->promise();
+
+            $promise->wait();
 
             if (count($historicalData) > 0)
                 $this->db->insert_batch('Historical', $historicalData);

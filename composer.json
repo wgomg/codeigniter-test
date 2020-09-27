@@ -6,6 +6,7 @@
 	"require": {
 		"twbs/bootstrap": "^4.5",
 		"components/jquery": "^3.5",
-		"datatables/datatables": "^1.1"
+		"datatables/datatables": "^1.1",
+		"guzzlehttp/guzzle": "7.0"
 	}
 }
