@@ -22,5 +22,5 @@
 - Migrate controller does just that, run migrations.
 
 ### Libraries used
-- Datatables, jquery, bootstrap installed via composer.
+- Datatables, jquery, bootstrap, GuzzleHttp installed via composer.
 - Chart.js and Moment.js used vía cdn link.
